@@ -5,7 +5,7 @@
 ## Установка
 
 ```bash
-cd /home/timofey/FOFAN/dota-analyzer
+cd .../dota-analyzer
 pip install -r requirements.txt
 ```
 
