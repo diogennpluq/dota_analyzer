@@ -105,7 +105,6 @@ class DotaAnalyzer:
         return None
     
     def get_recent_matches(self, limit=20):
-        """Получить последние матчи (макс. 20 — ограничение API)"""
         print(f"\n📥 Загрузка последних матчей (макс. 20)...")
         resp = self.session.get(f"{BASE_URL}/players/{self.player_id}/recentMatches")
         if resp.status_code == 200:
@@ -130,7 +129,6 @@ class DotaAnalyzer:
         total_xpm = 0
         
         for match in matches:
-            # Определяем победу: player_slot < 128 = Radiant, иначе Dire
             player_slot = match.get("player_slot", 0)
             radiant_win = match.get("radiant_win", False)
             is_win = (player_slot < 128) == radiant_win
@@ -145,14 +143,12 @@ class DotaAnalyzer:
             hero_name = hero_info.get("name", f"Unknown (ID:{hero_id})") if isinstance(hero_info, dict) else hero_info
             kda = (match.get("kills", 0), match.get("deaths", 0), match.get("assists", 0))
 
-            # Статистика по героям
             heroes_stats[hero_name]["kda"].append(kda)
             if is_win:
                 heroes_stats[hero_name]["wins"] += 1
             else:
                 heroes_stats[hero_name]["losses"] += 1
 
-            # Статистика по позициям
             lane = match.get("lane_role")
             if lane is None:
                 lane = self._guess_lane(hero_id, match)
@@ -161,7 +157,6 @@ class DotaAnalyzer:
             else:
                 roles_stats[lane]["losses"] += 1
             
-            # Средние показатели
             avg_kills += match.get("kills", 0)
             avg_deaths += match.get("deaths", 0)
             avg_assists += match.get("assists", 0)
